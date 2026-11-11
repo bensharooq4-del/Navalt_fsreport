@@ -26,13 +26,17 @@
     "plugins": [
       "expo-router",
        ["expo-location", { "locationWhenInUsePermission": "Navalt FSR records where each service visit took place." }],
+       ["expo-image-picker", {
+  "photosPermission": "This app uses your photos to attach pictures to service reports.",
+  "cameraPermission": "This app uses the camera to take photos for service reports."
+}],
       [
         "expo-splash-screen",
         {
           "backgroundColor": "#FFFFFF",
           "image": "./assets/images/om-logo.png",
           "imageWidth": 240
-          
+
 
         }
       ],

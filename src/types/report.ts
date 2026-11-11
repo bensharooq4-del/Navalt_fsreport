@@ -11,6 +11,11 @@ export interface PartRow {
   qty: string;
   reasonForFailure: string;
 }
+export interface Photo {
+  id: string;
+  /** Local file URI. Attached to the email and embedded in the PDF. */
+  uri: string;
+}
 
 export interface Signatory {
   name: string;
@@ -52,6 +57,7 @@ export interface Report {
   customerComplaint: string;
   observation: string;
   parts: PartRow[];
+  photos: Photo[];
   recommendations: string;
   customerRemarks: string;
 

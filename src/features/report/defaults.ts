@@ -34,6 +34,7 @@ export function createEmptyReport(sequence: number): Report {
     customerComplaint: "",
     observation: "",
     parts: [createEmptyPart(), createEmptyPart()],
+    photos: [],
     recommendations: "",
     customerRemarks: "",
     navaltRep: emptySignatory(),

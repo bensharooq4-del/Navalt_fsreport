@@ -32,6 +32,8 @@ const css = `
   .sig{height:42px;max-width:100%}
   .auth-title{text-align:center;font-weight:bold;color:${colors.primary};margin:6px 0 2px}
   .foot{margin-top:10px;color:${colors.textMuted};font-size:9px;text-align:right}
+  .photos{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .photo{width:48%;height:190px;object-fit:cover;border-radius:6px;border:1px solid ${colors.primary}}
 `;
 
 const row = (label: string, value: string) =>
@@ -47,7 +49,8 @@ const signatoryCell = (title: string, s: Signatory) => `
     <div><span class="label">Date:</span> ${formatDate(s.date)}</div>
   </td>`;
 
-export function buildReportHtml(r: Report): string {
+/** photoData = photos already converted to data URIs (see services/photos.ts) */
+export function buildReportHtml(r: Report, photoData: string[] = []): string {
   const filled = r.parts.filter(
     (p) => p.description.trim() || p.qty.trim() || p.reasonForFailure.trim(),
   );
@@ -70,6 +73,12 @@ export function buildReportHtml(r: Report): string {
         : "") +
       (r.location.address ? ` &ndash; ${esc(r.location.address)}` : "") +
       ` &ndash; <a href="${mapsUrl(r.location)}">Map</a>`
+    : "";
+
+  const photosHtml = photoData.length
+    ? `<div style="page-break-before:always"><div class="auth-title">Photos</div><div class="photos">${photoData
+        .map((src) => `<img class="photo" src="${src}" />`)
+        .join("")}</div></div>`
     : "";
 
   return `<!DOCTYPE html><html><head><meta charset="utf-8"/><style>${css}</style></head><body>
@@ -106,6 +115,8 @@ export function buildReportHtml(r: Report): string {
 
   <div class="auth-title">Authorization</div>
   <table><tr>${signatoryCell("Navalt Rep", r.navaltRep)}${signatoryCell("Customer Rep", r.customerRep)}</tr></table>
+
+  ${photosHtml}
 
   <div class="foot">Generated ${formatDate(new Date().toISOString())} ${formatTime(new Date().toISOString())}</div>
   </body></html>`;

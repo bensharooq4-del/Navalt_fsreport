@@ -2,15 +2,20 @@ import { File, Paths } from "expo-file-system";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { Report } from "../types/report";
+import { photoToDataUri } from "./photos";
 import { buildReportHtml } from "./pdfTemplate";
 
 /**
  * Builds the PDF on the device (works offline) and returns the file URI.
- * A4 at 72 dpi = 595 x 842.
+ * Photos are embedded in the PDF. A4 at 72 dpi = 595 x 842.
  */
 export async function generateReportPdf(report: Report): Promise<string> {
+  const photoData = await Promise.all(
+    report.photos.map((p) => photoToDataUri(p.uri)),
+  );
+
   const { uri } = await Print.printToFileAsync({
-    html: buildReportHtml(report),
+    html: buildReportHtml(report, photoData),
     width: 595,
     height: 842,
   });

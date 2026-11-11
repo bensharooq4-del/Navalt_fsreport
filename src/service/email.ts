@@ -6,13 +6,19 @@ import { buildRecipients } from "../utils/email";
 export type EmailResult = "sent" | "saved" | "cancelled" | "unavailable";
 
 /**
- * Opens the device mail app with the PDF attached and BOTH addresses filled in:
- * the client address(es) from the form + the constant company address from config.
+ * Opens the device mail app with BOTH addresses filled in (client + constant company address)
+ * and attaches the PDF plus every site photo.
  * The mail app keeps its own outbox, so a message composed offline is sent once the phone reconnects.
  */
 export async function sendReportEmail(report: Report): Promise<EmailResult> {
   if (!report.pdfUri) throw new Error("Generate the PDF before emailing.");
   if (!(await MailComposer.isAvailableAsync())) return "unavailable";
+
+  const n = report.photos.length;
+  const photoLine =
+    n > 0
+      ? `${n} site ${n === 1 ? "photo is" : "photos are"} also attached.\n\n`
+      : "";
 
   const result = await MailComposer.composeAsync({
     recipients: buildRecipients(report),
@@ -20,8 +26,9 @@ export async function sendReportEmail(report: Report): Promise<EmailResult> {
     body:
       `Hello,\n\nPlease find attached the Field Service Report ${report.fsrNo} ` +
       `for ${report.projectName}, attended on ${formatDate(report.attendedDate)}.\n\n` +
+      photoLine +
       `Regards,\n${report.navaltRep.name}`,
-    attachments: [report.pdfUri],
+    attachments: [report.pdfUri, ...report.photos.map((p) => p.uri)],
   });
   return result.status === "sent"
     ? "sent"

@@ -19,6 +19,7 @@ import { CheckboxGroup } from "../../components/CheckboxGroup";
 import { DateTimeField } from "../../components/DateTimeField";
 import { LocationField } from "../../components/LocationField";
 import { PartsTable } from "../../components/PartsTable";
+import { PhotosField } from "@/components/PhotoField";
 import { Row, Section } from "../../components/Section";
 import { SignatureField } from "../../components/SignatureField";
 import { TextField } from "../../components/TextField";
@@ -275,6 +276,13 @@ export function ReportForm({ report }: { report: Report }) {
             multiline
             value={draft.customerRemarks}
             onChangeText={(v) => update("customerRemarks", v)}
+          />
+        </Section>
+
+        <Section title="Photos">
+          <PhotosField
+            photos={draft.photos}
+            onChange={(p) => update("photos", p)}
           />
         </Section>
 
