@@ -103,8 +103,19 @@ export const useReportStore = create<ReportStore>()(
     }),
     {
       name: "navalt-fsr-store",
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => AsyncStorage),
+      // v2 added photos: give older saved reports an empty photo list
+      migrate: (persisted, version) => {
+        const state = persisted as Partial<ReportStore>;
+        if (version < 2 && state.reports) {
+          state.reports = state.reports.map((r) => ({
+            ...r,
+            photos: r.photos ?? [],
+          }));
+        }
+        return state as ReportStore;
+      },
     },
   ),
 );
