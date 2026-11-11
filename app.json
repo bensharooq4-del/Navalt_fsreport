@@ -25,14 +25,20 @@
     },
     "plugins": [
       "expo-router",
+       ["expo-location", { "locationWhenInUsePermission": "Navalt FSR records where each service visit took place." }],
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/om-logo.png",
+          "imageWidth": 240
+          
+
         }
-      ]
+      ],
+      "expo-sharing",
+      "expo-mail-composer",
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true,
