@@ -31,12 +31,14 @@ import { theme } from "../../theme";
 import { Report, SERVICE_TYPES, Signatory } from "../../types/report";
 import { buildRecipients } from "../../utils/email";
 import { validateReport } from "../../utils/validation";
+import { useKeyboardScroll } from "../../hooks/useKeyboardScroll";
 
 type RepKey = "navaltRep" | "customerRep";
 
 export function ReportForm({ report }: { report: Report }) {
   const updateReport = useReportStore((s) => s.updateReport);
   const online = useNetworkStatus();
+  const { scrollRef, keyboardHeight, onScroll } = useKeyboardScroll();
 
   const [draft, setDraft] = useState<Report>(report);
   const [attempted, setAttempted] = useState(false);
@@ -143,15 +145,15 @@ export function ReportForm({ report }: { report: Report }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={90}
-    >
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-      >
+   <View style={{ flex: 1 }}>
+  <ScrollView
+    ref={scrollRef as unknown as React.Ref<React.ElementRef<typeof ScrollView>>}
+    onScroll={onScroll}
+    scrollEventThrottle={16}
+    contentContainerStyle={[styles.content, { paddingBottom: theme.spacing.xxl * 2 + keyboardHeight }]}
+    keyboardShouldPersistTaps="handled"
+    keyboardDismissMode="on-drag"
+  >
         <Section title="Job details">
           <CheckboxGroup
             options={SERVICE_TYPES}
@@ -388,7 +390,7 @@ export function ReportForm({ report }: { report: Report }) {
           />
         </Section>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
